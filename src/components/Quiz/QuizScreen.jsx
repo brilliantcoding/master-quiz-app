@@ -32,6 +32,7 @@ export function QuizScreen({ questions, config, answers, currentIndex, onAnswer,
   const [animateIn, setAnimateIn] = useState(true);
   const [waitingForContinue, setWaitingForContinue] = useState(false);
   const continueButtonRef = useRef(null);
+  const questionCardRef = useRef(null);
 
   const question = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
@@ -59,11 +60,11 @@ export function QuizScreen({ questions, config, answers, currentIndex, onAnswer,
     setSelectedIndex(null);
     setShowFeedback(false);
     setWaitingForContinue(false);
-    // Remove focus from any element to prevent default selection highlighting
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
-    const t = setTimeout(() => setAnimateIn(true), 50);
+    const t = setTimeout(() => {
+      setAnimateIn(true);
+      // Focus the non-interactive card after render so buttons never auto-receive focus
+      questionCardRef.current?.focus();
+    }, 50);
     return () => clearTimeout(t);
   }, [currentIndex]);
 
@@ -154,7 +155,7 @@ export function QuizScreen({ questions, config, answers, currentIndex, onAnswer,
       </div>
 
       {/* Question Card */}
-      <div className={`question-card ${animateIn ? 'slide-in' : 'slide-out'}`}>
+      <div className={`question-card ${animateIn ? 'slide-in' : 'slide-out'}`} ref={questionCardRef} tabIndex="-1">
         <div className="question-number">Q{currentIndex + 1}</div>
         <p className="question-text">{question.question}</p>
 

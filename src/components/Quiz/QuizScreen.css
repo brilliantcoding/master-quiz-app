@@ -179,6 +179,10 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 }
 
+.question-card:focus {
+  outline: none;
+}
+
 .slide-in {
   animation: slideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
