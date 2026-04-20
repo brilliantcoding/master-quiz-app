@@ -237,13 +237,16 @@
   position: relative;
   outline: none;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-.option-btn:hover:not(:disabled) {
-  border-color: var(--primary);
-  background: rgba(124, 58, 237, 0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.2);
+@media (hover: hover) {
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: rgba(124, 58, 237, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.2);
+  }
 }
 
 .option-btn:disabled {
