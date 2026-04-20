@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTimer } from '../../hooks/useTimer';
 import './QuizScreen.css';
 
@@ -31,6 +31,7 @@ export function QuizScreen({ questions, config, answers, currentIndex, onAnswer,
   const [showFeedback, setShowFeedback] = useState(false);
   const [animateIn, setAnimateIn] = useState(true);
   const [waitingForContinue, setWaitingForContinue] = useState(false);
+  const continueButtonRef = useRef(null);
 
   const question = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
@@ -58,9 +59,21 @@ export function QuizScreen({ questions, config, answers, currentIndex, onAnswer,
     setSelectedIndex(null);
     setShowFeedback(false);
     setWaitingForContinue(false);
+    // Remove focus from any element to prevent default selection highlighting
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     const t = setTimeout(() => setAnimateIn(true), 50);
     return () => clearTimeout(t);
   }, [currentIndex]);
+
+  // Scroll continue button into view when it appears on wrong answer
+  useEffect(() => {
+    if (waitingForContinue && continueButtonRef.current) {
+      // Use scrollIntoView with smooth behavior and center positioning
+      continueButtonRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [waitingForContinue]);
 
   const handleContinue = () => {
     if (isLastQuestion) {
@@ -165,7 +178,7 @@ export function QuizScreen({ questions, config, answers, currentIndex, onAnswer,
             </div>
             <p className="feedback-explanation">{question.explanation}</p>
             {waitingForContinue && (
-              <button className="continue-btn" onClick={handleContinue} id="continue-btn">
+              <button className="continue-btn" onClick={handleContinue} id="continue-btn" ref={continueButtonRef}>
                 {isLastQuestion ? 'See Results →' : 'Continue →'}
               </button>
             )}

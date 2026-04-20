@@ -231,6 +231,8 @@
   font-size: 0.9rem;
   font-weight: 500;
   position: relative;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .option-btn:hover:not(:disabled) {
@@ -362,6 +364,8 @@
   transition: opacity 0.2s ease, transform 0.1s ease;
   display: block;
   width: 100%;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .continue-btn:hover {
