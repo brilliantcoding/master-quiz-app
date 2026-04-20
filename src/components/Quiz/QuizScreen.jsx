@@ -69,10 +69,20 @@ export function QuizScreen({ questions, config, answers, currentIndex, onAnswer,
 
   // Scroll continue button into view when it appears on wrong answer
   useEffect(() => {
-    if (waitingForContinue && continueButtonRef.current) {
-      // Use scrollIntoView with smooth behavior and center positioning
-      continueButtonRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
+    if (!waitingForContinue) return;
+    // Wait for feedbackSlide animation (0.35s) before measuring position
+    const id = setTimeout(() => {
+      if (!continueButtonRef.current) return;
+      const rect = continueButtonRef.current.getBoundingClientRect();
+      // visualViewport gives the true visible height on mobile (accounts for address bar)
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      const isOffScreen = rect.bottom > viewportHeight - 16;
+      if (isOffScreen) {
+        const scrollY = window.pageYOffset + rect.bottom - viewportHeight + 24;
+        window.scrollTo({ top: scrollY, behavior: 'smooth' });
+      }
+    }, 380);
+    return () => clearTimeout(id);
   }, [waitingForContinue]);
 
   const handleContinue = () => {
